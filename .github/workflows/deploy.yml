@@ -1,0 +1,10 @@
+name: Remote Deploy
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: self-hosted # Твоя VM1 подхватит это
+    steps:
+      - uses: actions/checkout@v4
+      - run: terraform init
+      - run: terraform apply -auto-approve
