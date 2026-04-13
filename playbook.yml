@@ -1,7 +1,14 @@
 - hosts: all
   become: yes
   tasks:
+    # 1. Обновляем систему
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    # 2. Ставим Docker (самый быстрый способ)
     - name: Install Docker
-      shell: curl -fsSL https://get.docker.com | sh
-    - name: Start Docker
-      service: name=docker state=started enabled=yes
+      shell: curl -fsSL https://get.get.docker.com | sh
+
+    # 3. Запускаем тестовый контейнер (Nginx)
+    - name: Run a web server container
+      shell: docker run -d -p 80:80 --name my-web nginx
