@@ -12,3 +12,4 @@
     # 3. Запускаем тестовый контейнер (Nginx)
     - name: Run a web server container
       shell: docker run -d -p 80:80 --name my-web nginx
+# Тестовый деплой
