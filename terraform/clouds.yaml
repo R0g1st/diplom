@@ -1,0 +1,12 @@
+clouds:
+  cyberprotect:
+    auth:
+      auth_url: "https://10.10.10.15:5000/v3"
+      username: "user03"
+      password: "P@ssw0rd"
+      project_name: "Project03"
+      user_domain_name: "Region2026"
+      project_domain_name: "Region2026"
+    region_name: "RegionOne"
+    interface: "public"
+    verify: false
