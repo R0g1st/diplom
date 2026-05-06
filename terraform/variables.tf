@@ -1,15 +1,6 @@
-variable "proxmox_api_token" {
-  sensitive = true
-}
-
-variable "proxmox_node" {
-  default = "pve"     # ← обязательно проверь настоящее имя ноды!
-}
-
-variable "minecraft_replicas" {
-  default = 2
-}
-
-variable "template_name" {
-  default = "ubuntu-2404-template"   # ← замени на реальное имя шаблона
-}
+variable "auth_url" { default = "https://10.10.10.15:5000/v3" }
+variable "project_name" { default = "Project03" }
+variable "user_name" { default = "user03" }
+variable "password" { default = "P@ssw0rd" }
+variable "domain_name" { default = "Region2026" }
+variable "key_pair" { default = "my_key" } 
