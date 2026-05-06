@@ -1,0 +1,40 @@
+name: Deploy Minecraft Cluster
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  terraform:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.8"   # или latest
+
+      - name: Terraform Init
+        run: terraform init
+        env:
+          TF_VAR_password: ${{ secrets.TF_VAR_password }}
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+        env:
+          TF_VAR_password: ${{ secrets.TF_VAR_password }}
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'   # Применяем только в main
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_password: ${{ secrets.TF_VAR_password }}
