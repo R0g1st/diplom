@@ -1,0 +1,5 @@
+auth_url     = "https://10.10.10.15:5000/v3"
+project_name = "Project03"
+user_name    = "user03"
+password     = "P@ssw0rd"
+domain_name  = "Region2026"

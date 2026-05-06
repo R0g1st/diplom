@@ -8,13 +8,16 @@ terraform {
 }
 
 provider "openstack" {
-  auth_url    = https://10.10.10.15:5000/v3
-  tenant_name = Project03
-  user_name   = user03
-  password    = P@ssw0rd
-  domain_name = Region2026 
-  user_domain_name    = Region2026
-  project_domain_name = Region2026
-  region        = Region2026    
+  auth_url    = var.auth_url
+  tenant_name = var.project_name
+  user_name   = var.user_name
+  password    = var.password
+  
+  # Обязательно для Киберпротекта
+  user_domain_name    = var.domain_name
+  project_domain_name = var.domain_name
+  
+  region        = "RegionOne"
+  endpoint_type = "public"
   insecure      = true
 }
