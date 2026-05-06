@@ -12,6 +12,9 @@ provider "openstack" {
   tenant_name = Project03
   user_name   = user03
   password    = P@ssw0rd
-  domain_name = Region2026
-  insecure    = true 
+  domain_name = Region2026 
+  user_domain_name    = Region2026
+  project_domain_name = Region2026
+  region        = Region2026    
+  insecure      = true
 }
