@@ -1,3 +1,8 @@
+variable "node_count" {
+  description = "Количество серверов Minecraft"
+  type        = number
+  default     = 2
+}
 variable "auth_url" { default = "https://10.10.10.15:5000/v3" }
 variable "project_name" { default = "Project03" }
 variable "user_name" { default = "user03" }
