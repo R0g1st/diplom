@@ -11,7 +11,6 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
 
-    # Это ключевое изменение: указываем рабочую директорию для всех шагов
     defaults:
       run:
         working-directory: ./terraform
@@ -23,10 +22,15 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "latest"
+          terraform_version: "1.14.8"
+
+      - name: Prepare Terraform Lock
+        # Удаляем старый файл блокировки, который мешает инициализации на Linux
+        run: rm -f .terraform.lock.hcl
 
       - name: Terraform Init
-        run: terraform init
+        # Флаг -upgrade скачает свежие версии провайдеров прямо на раннере
+        run: terraform init -upgrade
         env:
           TF_VAR_password: ${{ secrets.TF_VAR_password }}
 
