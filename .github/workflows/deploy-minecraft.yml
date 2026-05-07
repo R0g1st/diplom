@@ -11,6 +11,11 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
 
+    # Это ключевое изменение: указываем рабочую директорию для всех шагов
+    defaults:
+      run:
+        working-directory: ./terraform
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,7 +23,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.14.8"   # или latest
+          terraform_version: "1.14.8"
 
       - name: Terraform Init
         run: terraform init
@@ -34,7 +39,7 @@ jobs:
           TF_VAR_password: ${{ secrets.TF_VAR_password }}
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'   # Применяем только в main
+        if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
         env:
           TF_VAR_password: ${{ secrets.TF_VAR_password }}
