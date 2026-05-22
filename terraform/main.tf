@@ -43,17 +43,6 @@ resource "openstack_networking_secgroup_rule_v2" "ssh" {
 #  port_range_max    = 25565
 #  ethertype         = "IPv4"
 #}
-resource "openstack_networking_secgroup_rule_v2" "minecraft" {
-  lifecycle {
-    create_before_destroy = false # Сначала удалить старое, потом создать новое
-  }
-  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
-  direction         = "ingress"
-  protocol          = "tcp"
-  port_range_min    = 25565
-  port_range_max    = 25565
-  ethertype         = "IPv4"
-}
 
 ########################
 # Instances
