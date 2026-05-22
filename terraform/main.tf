@@ -13,8 +13,17 @@ provider "openstack" {
 # Security Group
 ########################
 
+#resource "openstack_networking_secgroup_v2" "minecraft_sg" {
+#  name = "minecraft-sg"
+#}
 resource "openstack_networking_secgroup_v2" "minecraft_sg" {
-  name = "minecraft-sg"
+  name        = "minecraft-sg"
+  description = "Managed by Terraform"
+
+  # Пересоздать группу, если она уже существует (опция управления жизненным циклом)
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ssh" {
@@ -26,7 +35,18 @@ resource "openstack_networking_secgroup_rule_v2" "ssh" {
   ethertype         = "IPv4"
 }
 
+#resource "openstack_networking_secgroup_rule_v2" "minecraft" {
+#  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
+#  direction         = "ingress"
+#  protocol          = "tcp"
+#  port_range_min    = 25565
+#  port_range_max    = 25565
+#  ethertype         = "IPv4"
+#}
 resource "openstack_networking_secgroup_rule_v2" "minecraft" {
+  lifecycle {
+    create_before_destroy = false # Сначала удалить старое, потом создать новое
+  }
   security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
   direction         = "ingress"
   protocol          = "tcp"
