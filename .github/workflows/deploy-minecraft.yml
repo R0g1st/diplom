@@ -13,16 +13,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install wget and unzip
-        run: |
-          export DEBIAN_FRONTEND=noninteractive
-          sudo -E apt-get update
-          sudo -E apt-get install -y wget unzip
-
       - name: Download and Install Terraform from Mirror
         run: |
-          wget https://hashicorp-releases.yandexcloud.net/terraform/1.14.0/terraform_1.14.0_linux_amd64.zip
-          sudo unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
+          # Проверяем, установлены ли unzip и wget. Если нет — ставим через sudo
+          command -v wget >/dev/null 2>&1 || (export DEBIAN_FRONTEND=noninteractive && sudo -E apt-get update && sudo -E apt-get install -y wget)
+          command -v unzip >/dev/null 2>&1 || (export DEBIAN_FRONTEND=noninteractive && sudo -E apt-get update && sudo -E apt-get install -y unzip)
+          
+          # Скачивание и установка
+          wget https://yandexcloud.net
+          sudo -E unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
           rm terraform_1.14.0_linux_amd64.zip
 
       - name: Terraform Init
