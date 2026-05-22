@@ -16,3 +16,4 @@ services:
       VERSION: "1.21.4"
       TYPE: "PAPER"
       MOTD: "Docker сервер 1.21.4"
+      MEMORY: "3G"
