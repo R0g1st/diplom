@@ -28,6 +28,20 @@ jobs:
         run: terraform init
         working-directory: ./terraform
 
+      - name: Configure Terraform Mirror
+        run: |
+          cat <<EOF > ~/.terraformrc
+          provider_installation {
+              network_mirror {
+                  url = "https://terraform-mirror.mcs.mail.ru"
+                  include = ["registry.terraform.io/*/*"]
+              }
+              direct {
+                  exclude = ["registry.terraform.io/*/*"]
+              }
+          }
+          EOF
+
       - name: Terraform Plan
         run: terraform plan
         working-directory: ./terraform
