@@ -15,8 +15,9 @@ jobs:
 
       - name: Install wget and unzip
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
+          export DEBIAN_FRONTEND=noninteractive
+          sudo -E apt-get update
+          sudo -E apt-get install -y wget unzip
 
       - name: Download and Install Terraform from Mirror
         run: |
