@@ -23,10 +23,6 @@ jobs:
           wget https://hashicorp-releases.yandexcloud.net/terraform/1.14.0/terraform_1.14.0_linux_amd64.zip
           sudo -E unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
           rm terraform_1.14.0_linux_amd64.zip
-      
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ./terraform
 
       - name: Configure Terraform Mirror
         run: |
@@ -41,6 +37,10 @@ jobs:
               }
           }
           EOF
+      
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
 
       - name: Terraform Plan
         run: terraform plan
