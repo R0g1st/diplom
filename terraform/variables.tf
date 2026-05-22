@@ -9,7 +9,7 @@ variable "node_count" {
 }
 
 variable "flavor_name" {
-  default = "medium"
+  default = "large"
 }
 
 variable "image_id" {
