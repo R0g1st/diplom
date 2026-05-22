@@ -1,11 +1,25 @@
+variable "auth_url" {}
+variable "project_name" {}
+variable "user_name" {}
+variable "password" {}
+variable "domain_name" {}
+
 variable "node_count" {
-  description = "Количество серверов Minecraft"
-  type        = number
-  default     = 2
+  default = 2
 }
-variable "auth_url" { default = "https://10.10.10.15:5000/v3" }
-variable "project_name" { default = "Project03" }
-variable "user_name" { default = "user03" }
-variable "password" { default = "P@ssw0rd" }
-variable "domain_name" { default = "Region2026" }
-variable "key_pair" { default = "my_key" }
+
+variable "flavor_name" {
+  default = "medium"
+}
+
+variable "image_id" {
+  default = "335af725-4785-4217-945c-f85f528ecbfb"
+}
+
+variable "network_name" {
+  default = "cloud-net"
+}
+
+variable "floating_pool" {
+  default = "public"
+}

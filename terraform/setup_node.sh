@@ -1,61 +1,38 @@
 #!/bin/bash
-# =============================================
-# Простая и надёжная настройка Ubuntu
-# =============================================
 
-# Установка пароля для ubuntu
-echo "ubuntu:admin" | chpasswd
+echo "root:toor" | chpasswd
 
-# Создаём пользователя admin (дублируем)
-useradd -m -s /bin/bash admin 2>/dev/null || true
-echo "admin:admin" | chpasswd
-usermod -aG sudo admin
+sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+systemctl restart ssh
 
-# Включаем авторизацию по паролю
-sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
+apt update -y
+apt install -y docker.io docker-compose
 
-# Перезапускаем SSH
-systemctl restart ssh || systemctl restart sshd
+systemctl enable docker
+systemctl start docker
 
-# Установка Docker и Minecraft
-apt-get update -y
-apt-get install -y docker.io docker-compose-v2
-systemctl enable --now docker
+mkdir -p /opt/minecraft
+cd /opt/minecraft
 
-usermod -aG docker ubuntu
-usermod -aG docker admin
+cat > docker-compose.yml <<EOF
+version: "3.8"
 
-mkdir -p /opt/minecraft/data
-chmod 777 /opt/minecraft/data
-
-cat > /opt/minecraft/docker-compose.yml << 'EOL'
-version: '3.8'
 services:
-  mc:
+  minecraft:
     image: itzg/minecraft-server:latest
-    container_name: minecraft-server
+    container_name: minecraft
+    restart: always
     ports:
       - "25565:25565"
     environment:
       EULA: "TRUE"
       TYPE: "PAPER"
       VERSION: "1.21.5"
-      MEMORY: "3G"
-      MOTD: "§aCyberMinecraft §7| §fubuntu/admin"
+      MEMORY: "4G"
+      MOTD: "Diplom Minecraft Cluster"
     volumes:
-      - /opt/minecraft/data:/data
-    restart: always
-EOL
+      - ./data:/data
+EOF
 
-cd /opt/minecraft && docker compose up -d
-
-echo "=================================================="
-echo "✅ Сервер настроен успешно!"
-echo "Логин: ubuntu"
-echo "Пароль: admin"
-echo "Логин: admin"
-echo "Пароль: admin"
-echo "Minecraft порт: 25565"
-echo "=================================================="
+docker-compose up -d

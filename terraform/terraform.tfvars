@@ -1,4 +1,3 @@
-node_count = 2
 auth_url     = "https://10.10.10.15:5000/v3"
 project_name = "Project03"
 user_name    = "user03"
