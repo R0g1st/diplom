@@ -13,8 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+      - name: Install wget and unzip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+
+      - name: Download and Install Terraform from Mirror
+        run: |
+          wget https://hashicorp-releases.yandexcloud.net/terraform/1.14.0/terraform_1.14.0_linux_amd64.zip
+          sudo unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
+          rm terraform_1.14.0_linux_amd64.zip
 
       - name: Terraform Init
         run: terraform init
