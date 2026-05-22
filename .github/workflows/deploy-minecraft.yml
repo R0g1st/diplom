@@ -24,6 +24,10 @@ jobs:
           sudo -E unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
           rm terraform_1.14.0_linux_amd64.zip
 
+      - name: Terraform Init with Mirror Lock
+        run: terraform init -upgrade
+        working-directory: ./terraform
+      
       - name: Terraform Init
         run: terraform init
         working-directory: ./terraform
