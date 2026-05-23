@@ -28,22 +28,22 @@ resource "openstack_networking_secgroup_rule_v2" "ssh" {
   remote_ip_prefix  = "0.0.0.0/0"
 }
 
-#resource "openstack_networking_secgroup_rule_v2" "minecraft" {
-#  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
-#  direction         = "ingress"
-#  protocol          = "tcp"
-#  port_range_min    = 25565
-#  port_range_max    = 25565
-#  ethertype         = "IPv4"
-#  remote_ip_prefix  = "0.0.0.0/0"
-#}
+resource "openstack_networking_secgroup_rule_v2" "minecraft" {
+  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
+  direction         = "ingress"
+  protocol          = "tcp"
+  port_range_min    = 25565
+  port_range_max    = 25565
+  ethertype         = "IPv4"
+  remote_ip_prefix  = "0.0.0.0/0"
+}
 
-#resource "openstack_networking_secgroup_rule_v2" "egress_ipv4" {
-#  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
-#  direction         = "egress"
-#  ethertype         = "IPv4"
-#  remote_ip_prefix  = "0.0.0.0/0"
-#}
+resource "openstack_networking_secgroup_rule_v2" "egress_ipv4" {
+  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
+  direction         = "egress"
+  ethertype         = "IPv4"
+  remote_ip_prefix  = "0.0.0.0/0"
+}
 
 ########################
 # Instances
@@ -51,7 +51,7 @@ resource "openstack_networking_secgroup_rule_v2" "ssh" {
 
 resource "openstack_compute_instance_v2" "minecraft_node" {
   count       = var.node_count
-  name        = "minecraft-node-${count.index+1}"
+  name        = "minecraft-node-${count.index + 1}"
   flavor_name = var.flavor_name
 
   block_device {
@@ -63,9 +63,7 @@ resource "openstack_compute_instance_v2" "minecraft_node" {
     delete_on_termination = true
   }
 
-  user_data = templatefile("${path.module}/setup_node.sh.tftpl", {
-    docker_compose = file("${path.module}/../docker/docker-compose.yml")
-  })
+  user_data = file("../scripts/setup_node.sh")
 
   network {
     name = var.network_name
