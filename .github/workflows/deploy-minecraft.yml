@@ -20,11 +20,10 @@ jobs:
       - name: Install Terraform
         run: |
           command -v wget >/dev/null 2>&1 || sudo apt-get update && sudo apt-get install -y wget unzip
-
-          wget https://hashicorp-releases.yandexcloud.net/terraform/1.14.0/terraform_1.14.0_linux_amd64.zip
-          sudo unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
-          rm terraform_1.14.0_linux_amd64.zip
-
+          # Используем версию 1.10.0+ для стабильной работы, зеркало Яндекса
+          wget https://yandexcloud.net
+          sudo unzip -o terraform_1.10.5_linux_amd64.zip -d /usr/local/bin/
+          rm terraform_1.10.5_linux_amd64.zip
           terraform version
 
       - name: Configure Terraform Mirror
@@ -44,11 +43,18 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      # Шаг импорта исправлен: изменен ID правила и добавлена проверка состояния
       - name: Import existing minecraft security rule
         run: |
-          terraform import \
-          openstack_networking_secgroup_rule_v2.minecraft \
-          3a60ee9a-6d1e-46a1-8f27-0402db5a167c || true
+          # Проверяем, нет ли уже этого ресурса в стейте, чтобы не спамить ошибками
+          if ! terraform state show openstack_networking_secgroup_rule_v2.minecraft >/dev/null 2>&1; then
+            echo "Правило не найдено в state. Импортируем..."
+            terraform import \
+              openstack_networking_secgroup_rule_v2.minecraft \
+              87bfd51f-2263-49c8-a300-71cde71aab6a || true
+          else
+            echo "Правило уже есть в state. Пропускаем импорт."
+          fi
 
       - name: Terraform Validate
         run: terraform validate
