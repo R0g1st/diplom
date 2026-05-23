@@ -10,19 +10,26 @@ services:
       - "25565:25565"
 
     volumes:
-      - /opt/minecraft/data:/data
+      - ./data:/data
 
     environment:
       EULA: "TRUE"
       ONLINE_MODE: "false"
-
       TYPE: "CUSTOM"
       CUSTOM_SERVER: "/data/server.jar"
-
       MEMORY: "4G"
-      MOTD: "Minecraft Cluster 1.21.4"
-
+      MOTD: "Minecraft 1.21.4"
       SKIP_DOWNLOAD_DEFAULTS: "true"
+
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      if [ ! -f /data/server.jar ]; then
+        echo 'Downloading Minecraft server...';
+        wget -O /data/server.jar https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar;
+      fi;
+      exec /start
+      "
 
     stdin_open: true
     tty: true
