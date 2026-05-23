@@ -44,6 +44,12 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Import existing minecraft security rule
+        run: |
+          terraform import \
+          openstack_networking_secgroup_rule_v2.minecraft \
+          3a60ee9a-6d1e-46a1-8f27-0402db5a167c || true
+
       - name: Terraform Validate
         run: terraform validate
 
