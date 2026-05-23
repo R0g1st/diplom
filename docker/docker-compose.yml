@@ -15,13 +15,12 @@ services:
     environment:
       EULA: "TRUE"
       ONLINE_MODE: "false"
-      OVERRIDE_SERVER_PROPERTIES: "true"
 
       TYPE: "CUSTOM"
       CUSTOM_SERVER: "/data/server.jar"
 
-      MOTD: "Docker server 1.21.4"
       MEMORY: "4G"
+      MOTD: "Minecraft Cluster 1.21.4"
 
       SKIP_DOWNLOAD_DEFAULTS: "true"
 
