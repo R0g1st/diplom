@@ -38,12 +38,12 @@ resource "openstack_networking_secgroup_rule_v2" "minecraft" {
   remote_ip_prefix  = "0.0.0.0/0"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "egress_ipv4" {
-  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
-  direction         = "egress"
-  ethertype         = "IPv4"
-  remote_ip_prefix  = "0.0.0.0/0"
-}
+#resource "openstack_networking_secgroup_rule_v2" "egress_ipv4" {
+ # security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
+  #direction         = "egress"
+  #ethertype         = "IPv4"
+  #remote_ip_prefix  = "0.0.0.0/0"
+#}
 
 ########################
 # Instances
@@ -83,11 +83,17 @@ resource "openstack_networking_floatingip_v2" "fip" {
   pool  = var.floating_pool
 }
 
-resource "openstack_compute_floatingip_associate_v2" "assoc" {
+resource "openstack_networking_floatingip_associate_v2" "assoc" {
   count       = var.node_count
   floating_ip = openstack_networking_floatingip_v2.fip[count.index].address
-  instance_id = openstack_compute_instance_v2.minecraft_node[count.index].id
+  port_id     = openstack_compute_instance_v2.minecraft_node[count.index].network[0].port
 }
+
+#resource "openstack_compute_floatingip_associate_v2" "assoc" {
+#  count       = var.node_count
+#  floating_ip = openstack_networking_floatingip_v2.fip[count.index].address
+#  instance_id = openstack_compute_instance_v2.minecraft_node[count.index].id
+#}
 
 output "minecraft_ips" {
   value = openstack_networking_floatingip_v2.fip[*].address
