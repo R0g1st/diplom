@@ -9,6 +9,12 @@ provider "openstack" {
   insecure            = true
 }
 
+import {
+  to = openstack_networking_secgroup_rule_v2.minecraft
+  id = "87bfd51f-2263-49c8-a300-71cde71aab6a"
+}
+
+
 ########################
 # Security Group
 ########################
