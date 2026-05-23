@@ -20,6 +20,7 @@ systemctl enable docker
 systemctl start docker
 
 # создаем папки
+mkdir -p /opt/minecraft
 mkdir -p /opt/minecraft/data
 
 # скачиваем Minecraft 1.21.4 server.jar
@@ -58,6 +59,5 @@ docker-compose up -d
 
 echo "=========================="
 echo "Minecraft started"
-echo "IP: <FLOATING_IP>:25565"
 echo "root / toor"
 echo "=========================="

@@ -1,5 +1,5 @@
 version: "3.8"
-#d
+
 services:
   mc-server:
     image: itzg/minecraft-server:latest
@@ -15,13 +15,10 @@ services:
     environment:
       EULA: "TRUE"
       ONLINE_MODE: "false"
-
       TYPE: "CUSTOM"
       CUSTOM_SERVER: "/data/server.jar"
-
       MEMORY: "4G"
       MOTD: "Minecraft 1.21.4 Cluster"
-
       SKIP_DOWNLOAD_DEFAULTS: "true"
       OVERRIDE_SERVER_PROPERTIES: "true"
 
