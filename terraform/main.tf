@@ -9,9 +9,9 @@ provider "openstack" {
   insecure            = true
 }
 
-#########################
+########################
 # Security Group
-#########################
+########################
 
 resource "openstack_networking_secgroup_v2" "minecraft_sg" {
   name        = "minecraft-sg"
