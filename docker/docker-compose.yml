@@ -5,23 +5,25 @@ services:
     image: itzg/minecraft-server
     container_name: mc-server
     restart: unless-stopped
+
     ports:
       - "25565:25565"
+
     volumes:
       - /opt/minecraft/data:/data
+
     environment:
       EULA: "TRUE"
       ONLINE_MODE: "false"
       OVERRIDE_SERVER_PROPERTIES: "true"
-      VERSION: "1.21.4"
-      TYPE: "PAPER"
+
+      TYPE: "CUSTOM"
+      CUSTOM_SERVER: "/data/server.jar"
+
       MOTD: "Docker server 1.21.4"
       MEMORY: "4G"
+
       SKIP_DOWNLOAD_DEFAULTS: "true"
-      #PROXY: "223.204.117.60:8080"
-      #JVM_OPTS: >-
-      #  -Dhttp.proxyHost=223.204.117.60
-      #  -Dhttp.proxyPort=8080
-      #  -Dhttps.proxyHost=223.204.117.60
-      #  -Dhttps.proxyPort=8080
-      #  -Dhttp.nonProxyHosts=localhost|127.0.0.1
+
+    stdin_open: true
+    tty: true
