@@ -1,39 +1,54 @@
-#!/bin/bash
+name: Deploy Minecraft Cluster
 
-apt update -y
-apt install -y docker.io docker-compose wget
+on:
+  push:
+    branches:
+      - main
 
-systemctl enable docker
-systemctl start docker
+jobs:
+  terraform:
+    runs-on: self-hosted
 
-mkdir -p /opt/minecraft/data
+    defaults:
+      run:
+        working-directory: ./terraform
 
-wget -O /opt/minecraft/data/server.jar \
-https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-cat > /opt/minecraft/docker-compose.yml <<EOF
-version: "3.8"
+      - name: Install Terraform
+        run: |
+          command -v wget >/dev/null 2>&1 || sudo apt-get update && sudo apt-get install -y wget unzip
 
-services:
-  mc-server:
-    image: itzg/minecraft-server
-    container_name: mc-server
-    restart: unless-stopped
-    ports:
-      - "25565:25565"
-    volumes:
-      - /opt/minecraft/data:/data
-    environment:
-      EULA: "TRUE"
-      ONLINE_MODE: "false"
-      TYPE: "CUSTOM"
-      CUSTOM_SERVER: "/data/server.jar"
-      MEMORY: "4G"
-      MOTD: "Minecraft Cluster 1.21.4"
-      SKIP_DOWNLOAD_DEFAULTS: "true"
-    stdin_open: true
-    tty: true
-EOF
+          wget https://hashicorp-releases.yandexcloud.net/terraform/1.14.0/terraform_1.14.0_linux_amd64.zip
+          sudo unzip -o terraform_1.14.0_linux_amd64.zip -d /usr/local/bin/
+          rm terraform_1.14.0_linux_amd64.zip
 
-cd /opt/minecraft
-docker-compose up -d
+          terraform version
+
+      - name: Configure Terraform Mirror
+        run: |
+          cat <<EOF > ~/.terraformrc
+          provider_installation {
+            network_mirror {
+              url = "https://terraform-mirror.mcs.mail.ru"
+              include = ["registry.terraform.io/*/*"]
+            }
+            direct {
+              exclude = ["registry.terraform.io/*/*"]
+            }
+          }
+          EOF
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
