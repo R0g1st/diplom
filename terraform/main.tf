@@ -13,36 +13,50 @@ provider "openstack" {
 # Security Group
 ########################
 
-#resource "openstack_networking_secgroup_v2" "minecraft_sg" {
-#  name = "minecraft-sg"
-#}
-resource "openstack_networking_secgroup_v2" "minecraft_sg" {
-  name        = "minecraft-sg"
-  description = "Managed by Terraform"
+locals {
+  security_group_name = var.security_group_name
+}
 
-  # Пересоздать группу, если она уже существует (опция управления жизненным циклом)
-  lifecycle {
-    create_before_destroy = true
-  }
+data "openstack_networking_secgroup_v2" "minecraft_sg" {
+  count = var.use_existing_security_group ? 1 : 0
+  name  = local.security_group_name
+}
+
+resource "openstack_networking_secgroup_v2" "minecraft_sg" {
+  count       = var.use_existing_security_group ? 0 : 1
+  name        = local.security_group_name
+  description = "Managed by Terraform"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ssh" {
-  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
+  count             = var.use_existing_security_group ? 0 : 1
+  security_group_id = openstack_networking_secgroup_v2.minecraft_sg[0].id
   direction         = "ingress"
   protocol          = "tcp"
   port_range_min    = 22
   port_range_max    = 22
   ethertype         = "IPv4"
+  remote_ip_prefix  = "0.0.0.0/0"
 }
 
-#resource "openstack_networking_secgroup_rule_v2" "minecraft" {
-#  security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
-#  direction         = "ingress"
-#  protocol          = "tcp"
-#  port_range_min    = 25565
-#  port_range_max    = 25565
-#  ethertype         = "IPv4"
-#}
+resource "openstack_networking_secgroup_rule_v2" "minecraft" {
+  count             = var.use_existing_security_group ? 0 : 1
+  security_group_id = openstack_networking_secgroup_v2.minecraft_sg[0].id
+  direction         = "ingress"
+  protocol          = "tcp"
+  port_range_min    = 25565
+  port_range_max    = 25565
+  ethertype         = "IPv4"
+  remote_ip_prefix  = "0.0.0.0/0"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "egress_ipv4" {
+  count             = var.use_existing_security_group ? 0 : 1
+  security_group_id = openstack_networking_secgroup_v2.minecraft_sg[0].id
+  direction         = "egress"
+  ethertype         = "IPv4"
+  remote_ip_prefix  = "0.0.0.0/0"
+}
 
 ########################
 # Instances
@@ -62,14 +76,16 @@ resource "openstack_compute_instance_v2" "minecraft_node" {
     delete_on_termination = true
   }
 
-  user_data = file("${path.module}/setup_node.sh")
+  user_data = templatefile("${path.module}/setup_node.sh.tftpl", {
+    docker_compose = file("${path.module}/../docker/docker-compose.yml")
+  })
 
   network {
     name = var.network_name
   }
 
   security_groups = [
-    openstack_networking_secgroup_v2.minecraft_sg.name
+    local.security_group_name
   ]
 }
 

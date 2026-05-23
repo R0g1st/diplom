@@ -1,0 +1,28 @@
+#!/bin/bash
+set -euxo pipefail
+
+echo "root:toor" | chpasswd
+
+sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+systemctl restart ssh
+
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y docker.io docker-compose
+
+systemctl enable --now docker
+
+mkdir -p /opt/minecraft/data
+
+cat > /opt/minecraft/docker-compose.yml <<'EOF_COMPOSE'
+${docker_compose}
+EOF_COMPOSE
+
+cd /opt/minecraft
+
+until docker info >/dev/null 2>&1; do
+  sleep 2
+done
+
+docker-compose up -d

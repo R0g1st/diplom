@@ -3,3 +3,5 @@ project_name = "Project03"
 user_name    = "user03"
 password     = "P@ssw0rd"
 domain_name  = "Region2026"
+security_group_name         = "minecraft-sg"
+use_existing_security_group = false
