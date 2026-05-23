@@ -14,22 +14,15 @@ services:
 
     environment:
       EULA: "TRUE"
-
-      # отключаем Mojang auth (если нужно)
       ONLINE_MODE: "false"
 
-      # используем свой jar
       TYPE: "CUSTOM"
       CUSTOM_SERVER: "/data/server.jar"
 
-      # настройки сервера
       MEMORY: "4G"
-      MOTD: "Minecraft Cluster 1.21.4"
+      MOTD: "Minecraft 1.21.4 Cluster"
 
-      # запрет скачивания defaults
       SKIP_DOWNLOAD_DEFAULTS: "true"
-
-      # принять eula автоматически
       OVERRIDE_SERVER_PROPERTIES: "true"
 
     stdin_open: true
