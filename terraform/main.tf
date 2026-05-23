@@ -28,6 +28,7 @@ resource "openstack_networking_secgroup_rule_v2" "ssh" {
   remote_ip_prefix  = "0.0.0.0/0"
 }
 
+
 resource "openstack_networking_secgroup_rule_v2" "minecraft" {
   security_group_id = openstack_networking_secgroup_v2.minecraft_sg.id
   direction         = "ingress"
