@@ -44,6 +44,23 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+
+      - name: Remove old terraform state if exists
+        run: terraform state rm openstack_networking_secgroup_rule_v2.minecraft || true
+
+      - name: Import existing minecraft security rule
+        run: |
+          RULE_ID=$(openstack security group rule list minecraft-sg -f value -c ID | head -n 1)
+          terraform import openstack_networking_secgroup_rule_v2.minecraft $RULE_ID || true
+
+      
+          
+      #- name: Import existing minecraft security rule
+      #  run: |
+      #    terraform import \
+      #   openstack_networking_secgroup_rule_v2.minecraft \
+      #    3a60ee9a-6d1e-46a1-8f27-0402db5a167c || true
+
       - name: Terraform Validate
         run: terraform validate
 
