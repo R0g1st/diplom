@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mc-server:
-    image: itzg/minecraft-server
+    image: itzg/minecraft-server:latest
     container_name: mc-server
     restart: unless-stopped
 
@@ -10,26 +10,27 @@ services:
       - "25565:25565"
 
     volumes:
-      - ./data:/data
+      - /opt/minecraft/data:/data
 
     environment:
       EULA: "TRUE"
+
+      # отключаем Mojang auth (если нужно)
       ONLINE_MODE: "false"
+
+      # используем свой jar
       TYPE: "CUSTOM"
       CUSTOM_SERVER: "/data/server.jar"
+
+      # настройки сервера
       MEMORY: "4G"
-      MOTD: "Minecraft 1.21.4"
+      MOTD: "Minecraft Cluster 1.21.4"
+
+      # запрет скачивания defaults
       SKIP_DOWNLOAD_DEFAULTS: "true"
 
-    entrypoint: /bin/sh
-    command: >
-      -c "
-      if [ ! -f /data/server.jar ]; then
-        echo 'Downloading Minecraft server...';
-        wget -O /data/server.jar https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar;
-      fi;
-      exec /start
-      "
+      # принять eula автоматически
+      OVERRIDE_SERVER_PROPERTIES: "true"
 
     stdin_open: true
     tty: true
