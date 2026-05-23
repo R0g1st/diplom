@@ -4,15 +4,6 @@ variable "user_name" {}
 variable "password" {}
 variable "domain_name" {}
 
-variable "security_group_name" {
-  default = "minecraft-sg"
-}
-
-variable "use_existing_security_group" {
-  type    = bool
-  default = false
-}
-
 variable "node_count" {
   default = 2
 }
