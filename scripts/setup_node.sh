@@ -1,38 +1,39 @@
 #!/bin/bash
 
-echo "root:toor" | chpasswd
-
-sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
-sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
-systemctl restart ssh
-
 apt update -y
-apt install -y docker.io docker-compose
+apt install -y docker.io docker-compose wget
 
 systemctl enable docker
 systemctl start docker
 
-mkdir -p /opt/minecraft
-cd /opt/minecraft
+mkdir -p /opt/minecraft/data
 
-cat > docker-compose.yml <<EOF
+wget -O /opt/minecraft/data/server.jar \
+https://piston-data.mojang.com/v1/objects/4707d00eb834b446575d89a61a11b5d548d8c001/server.jar
+
+cat > /opt/minecraft/docker-compose.yml <<EOF
 version: "3.8"
 
 services:
-  minecraft:
-    image: itzg/minecraft-server:latest
-    container_name: minecraft
-    restart: always
+  mc-server:
+    image: itzg/minecraft-server
+    container_name: mc-server
+    restart: unless-stopped
     ports:
       - "25565:25565"
+    volumes:
+      - /opt/minecraft/data:/data
     environment:
       EULA: "TRUE"
-      TYPE: "PAPER"
-      VERSION: "1.21.5"
+      ONLINE_MODE: "false"
+      TYPE: "CUSTOM"
+      CUSTOM_SERVER: "/data/server.jar"
       MEMORY: "4G"
-      MOTD: "Diplom Minecraft Cluster"
-    volumes:
-      - ./data:/data
+      MOTD: "Minecraft Cluster 1.21.4"
+      SKIP_DOWNLOAD_DEFAULTS: "true"
+    stdin_open: true
+    tty: true
 EOF
 
+cd /opt/minecraft
 docker-compose up -d
