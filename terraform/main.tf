@@ -100,6 +100,13 @@ resource "openstack_networking_floatingip_associate_v2" "assoc" {
 }
 
 
+variable "instance_count" {
+  type        = number
+  description = "Количество создаваемых инстансов"
+  default     = 1
+}
+
+
 #resource "openstack_compute_floatingip_associate_v2" "assoc" {
 #  count       = var.node_count
 #  floating_ip = openstack_networking_floatingip_v2.fip[count.index].address
