@@ -90,13 +90,10 @@ resource "openstack_networking_floatingip_v2" "fip" {
   pool  = var.floating_pool
 }
 
-resource "openstack_networking_floatingip_associate_v2" "assoc" {
-  count       = var.instance_count # или ваше условие для count
+resource "openstack_compute_floatingip_associate_v2" "assoc" {
+  count       = var.node_count
   floating_ip = openstack_networking_floatingip_v2.fip[count.index].address
-  port_id     = openstack_compute_instance_v2.minecraft_node[count.index].network[0].port
-  depends_on = [
-    openstack_compute_instance_v2.minecraft_node
-  ]
+  instance_id = openstack_compute_instance_v2.minecraft_node[count.index].id
 }
 
 
