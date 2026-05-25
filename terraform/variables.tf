@@ -5,7 +5,7 @@ variable "password" {}
 variable "domain_name" {}
 
 variable "node_count" {
-  default = 2
+  default = 5
 }
 
 variable "flavor_name" {
